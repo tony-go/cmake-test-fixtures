@@ -18,6 +18,10 @@ target_link_libraries(test_exec PRIVATE CURL::libcurl)
 add_test(NAME start_server COMMAND bash -c "${NODE_EXECUTABLE} ${CMAKE_CURRENT_SOURCE_DIR}/server.js > /dev/null 2>&1 &")
 set_tests_properties(start_server PROPERTIES FIXTURES_SETUP Server)
 
+# Add a new test that waits for the server to be ready
+add_test(NAME wait_for_server COMMAND ${NODE_EXECUTABLE} ${CMAKE_CURRENT_SOURCE_DIR}/wait-for-server.js)
+set_tests_properties(wait_for_server PROPERTIES FIXTURES_REQUIRED Server)
+
 # Define the actual test, which depends on the mock server being up
 add_test(NAME my_test_case COMMAND test_exec)
 set_tests_properties(my_test_case PROPERTIES FIXTURES_REQUIRED Server)
