@@ -3,18 +3,20 @@
 #include <fstream>
 #include <iostream>
 #include <thread>
+#include <cstdlib>
 
 #include <curl/curl.h>
 
-int main() {
+int test(const std::string &server_port_str) {
   CURL *curl;
   CURLcode res;
 
   curl_global_init(CURL_GLOBAL_DEFAULT);
 
   curl = curl_easy_init();
+  const std::string url = "http://localhost:" + server_port_str;
   if (curl) {
-    curl_easy_setopt(curl, CURLOPT_URL, "http://localhost:8080");
+    curl_easy_setopt(curl, CURLOPT_URL, url.c_str());
 
     res = curl_easy_perform(curl);
 
@@ -31,3 +33,22 @@ int main() {
 
   return 0;
 }
+
+int main() {
+  const char* portFilePath = std::getenv("PORT_FILE");
+  if (!portFilePath) {
+    std::cerr << "PORT_FILE environment variable not set\n";
+    return 1;
+  }
+
+  std::ifstream portFile(portFilePath);
+  if (!portFile.is_open()) {
+    std::cerr << "Failed to open " << portFilePath << "\n";
+    return 1;
+  }
+
+  std::string serverPort;
+  std::getline(portFile, serverPort);
+  return test(std::string(serverPort));
+}
+

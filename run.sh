@@ -14,7 +14,7 @@ cmake ..
 make
 
 # Run the tests
-ctest
+ctest --output-on-failure
 
 # Go back to the root directory
 cd ../

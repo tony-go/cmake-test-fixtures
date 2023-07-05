@@ -15,8 +15,13 @@ function closeServer() {
   }
 }
 
-server.listen(8080, () => {
+server.listen(0, () => {
   fs.writeFile('server.pid', String(process.pid), err => {
+    if (err) throw err;
+  });
+
+  const port = server.address().port;
+  fs.writeFile('server.port', String(port), err => {
     if (err) throw err;
   });
 });
