@@ -7,7 +7,7 @@ build: configure
 	make -C dist
 
 test: build
-	ctest --test-dir dist --output-on-failure
+	ctest --test-dir dist --output-on-failure -j 4
 
 clean:
 	rm -f server.port server.pid

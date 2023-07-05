@@ -10,9 +10,11 @@ enable_testing()
 # Find CURL library
 find_package(CURL REQUIRED)
 
-# Define the test executable
+# Define the tests executables
 add_executable(test_exec test.cpp)
 target_link_libraries(test_exec PRIVATE CURL::libcurl)
+add_executable(test_exec_2 test2.cpp)
+target_link_libraries(test_exec_2 PRIVATE CURL::libcurl)
 
 configure_file(${CMAKE_CURRENT_SOURCE_DIR}/server.js ${CMAKE_BINARY_DIR}/server.js COPYONLY)
 
@@ -24,6 +26,10 @@ set_tests_properties(start_server PROPERTIES FIXTURES_SETUP Server)
 add_test(NAME my_test_case COMMAND test_exec)
 set_tests_properties(my_test_case PROPERTIES FIXTURES_REQUIRED Server)
 set_property(TEST my_test_case
+             PROPERTY ENVIRONMENT "PORT_FILE=${CMAKE_BINARY_DIR}/server.port")
+add_test(NAME my_test_case_2 COMMAND test_exec_2)
+set_tests_properties(my_test_case_2 PROPERTIES FIXTURES_REQUIRED Server)
+set_property(TEST my_test_case_2
              PROPERTY ENVIRONMENT "PORT_FILE=${CMAKE_BINARY_DIR}/server.port")
 
 # Define the stop server test
